@@ -9,9 +9,9 @@ Each directory has a different setup of JupyterHub. To use a particualr setup do
 	* [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)	
 
 2. Clone the repository.
-3. Change directory into 1 of the examples.
+3. Change directory into 1 of the examples. `$> cd demo_nbgrader `
 4. run ``` vagrant up ```  This will bringup a virtual machine with debian and all the required packages will be installed.
-5. Now in your host machine you can go to a browser ``` https://192.168.50.10``` , to login to the Juypterhub (login and credintials please read the README.md in each of the folder)
+5. Now in your **host machine** you can go to a browser ``` https://192.168.50.10``` , to login to the Juypterhub (login and credintials please read the README.md in each of the folder)
 6. Shutting down `$> vagrant halt`
 
 # License
