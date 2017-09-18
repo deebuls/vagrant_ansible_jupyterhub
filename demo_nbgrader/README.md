@@ -17,7 +17,7 @@ To use the vagrant file, you will need to have done the following:
   6. This will take around 15 - 20 minutes to complete the installation
   7. Once completed, from your *host machine* browser type `https://192.168.50.10` , You should see the login page for jupyterhub
 
-## User informatin
+## User Login Information
 - username: admin, password: admin
   * can add more users in the jupyterhub
   * can create assignments and release them
