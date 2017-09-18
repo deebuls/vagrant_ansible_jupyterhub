@@ -1,0 +1,4 @@
+---
+
+- include: jupyter.yml
+- include: python3.yml

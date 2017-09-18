@@ -1,0 +1,8 @@
+---
+
+- include: packages.yml
+- include: directories.yml
+- include: config.yml
+- include: googleanalytics.yml
+- include: supervisor.yml
+

@@ -1,0 +1,30 @@
+---
+- name: install recent version of npm
+  apt: name={{item}} state=present
+  become: true
+  with_items:
+    - npm
+    - nodejs-legacy
+
+- name: install jupyterhub dependencies via npm
+  npm: 
+    name: configurable-http-proxy 
+    global: yes
+    state: present
+
+- name: install jupyterhub via pip
+  pip: name={{item}} state=present editable=false
+  become: true
+  with_items:
+    - jupyterhub==0.7
+    - oauthenticator==0.5
+    - notebook
+    - jupyterhub-systemdspawner
+    - sqlalchemy
+#    - jupyterhub-ldapauthenticator
+
+- name: install jupyterhub ldapautheticator via pip
+  pip: name={{item}} state=forcereinstall editable=false
+  become: true
+  with_items:
+    - git+https://github.com/gkdb/ldapauthenticator

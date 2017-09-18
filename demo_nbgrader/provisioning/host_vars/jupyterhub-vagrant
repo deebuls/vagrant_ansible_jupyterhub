@@ -1,0 +1,193 @@
+---
+
+# An example `hostname` file
+#
+# Edit this file to customize settings for a particular host.
+# Save as FQDN of the hostname without the `.example` suffix,
+# such as `jupyterhub.myuniversity.edu`.
+
+# ------------------------------------------------------------------------------
+# Required settings
+# ------------------------------------------------------------------------------
+
+# The base directory of user accounts.
+home_dir: /home
+
+# Users with administrative privileges.
+jupyterhub_admin_users:
+  - admin
+
+# Whitelist of jupyterhub users.
+jupyterhub_users:
+  - student
+  - grader
+
+# R kernel installation, set to true to enable.
+install_r_kernel: false
+
+# bash kernel installation, set to true to enable
+install_bash_kernel: false
+
+# Secret token for proxy access. Create token using something like
+# `openssl rand -hex 32` and enter between quotation marks below.
+proxy_auth_token: ''
+
+# Cleanup single user servers and the proxy on jupyterhub shutdown. Setting
+# this to false, will allow jupyterhub to be restarted while leaving the proxy
+# and single user servers running.
+cleanup_on_shutdown: true
+
+# ------------------------------------------------------------------------------
+# Packages
+# ------------------------------------------------------------------------------
+
+# Add or remove packages here for different package managers here (pip,
+# cran). The package listed here are on-top of the base installation of jupyter,
+# ipython and the IPython and IR kernel.
+
+
+pip_packages:
+  - brewer2mpl
+  - numpy
+  - cython
+  - h5py
+  - pandas
+  - sympy
+  - pillow
+  - networkx
+  - odo
+  - altair
+  - nose
+  - plotly
+  - matplotlib
+  - scipy
+  - scikit-learn
+  - scikit-image
+#  - ggplot
+
+# ------------------------------------------------------------------------------
+# Optional settings
+# ------------------------------------------------------------------------------
+
+# The following sections are for optional features that can be enabled.
+
+# ------------------------------------------------------------------------------
+# OAuth
+# ------------------------------------------------------------------------------
+
+# The default authentication will use PAM, which is the standard UNIX password
+# standard. In the default configuration UNIX usernames and passwords will be
+# used for JupyterHub. Enabling OAuth through an OAuth provider (such as GitHub)
+# will enable users to log in using their username and passwords from the OAuth
+# provider. In this case, new users can be added using the JupyterHub Admin
+# page, and the users' home directories will be automatically created.
+
+# Set to `true` to enable.
+use_oauth: false
+
+# The OAuth callback URL.
+oauth_callback_url: https://mydomain.org/hub/oauth_callback
+
+# The OAuth client ID.
+oauth_client_id: ''
+
+# The OAuth client secret.
+oauth_client_secret: ''
+
+# ------------------------------------------------------------------------------
+# LDAP authentication
+# ------------------------------------------------------------------------------
+
+# The default authentication will use PAM, which is the standard UNIX password
+# standard. In the default configuration UNIX usernames and passwords will be
+# used for JupyterHub. Enabling LDAP
+# will enable users to log in using their username and passwords from the LDAP
+# provider. In this case, new users can be added using the JupyterHub Admin
+# page, and the users' home directories will be automatically created.
+
+# Set to `true` to enable.
+use_LDAPauth: false
+
+# The OAuth callback URL.
+ldap_server_address: addressbook.inf.fh-bonn-rhein-sieg.de 
+
+# ------------------------------------------------------------------------------
+# nbgrader
+# ------------------------------------------------------------------------------
+
+# nbgrader is a system for assigning, collecting and grading notebook based
+# homework assignments. For more details see:
+# http://nbgrader.readthedocs.io/en/stable/
+
+# Set to `true` to enable.
+use_nbgrader: true
+
+# The list of nbgrader courses. Each must have a unique `course_id` and `port`.
+# IMPORTANT: These user accounts must be created before the ansible scripts
+# are run. If OAuth is used, passwords must be disabled for those users.
+nbgrader_courses:
+  - {
+      course_id: "course_1",
+      owner: "admin",
+      graders: ["grader"],
+      port: 5005
+    }
+
+# ------------------------------------------------------------------------------
+# cull_idle_servers
+# ------------------------------------------------------------------------------
+
+# Set to `true` to enable.
+use_cull_idle_servers: true
+
+# The interval (in seconds) for checking for idle servers to cull.
+cull_every: 600
+
+# The idle timeout (in seconds).
+cull_timeout: 3600
+
+# ------------------------------------------------------------------------------
+# Misc optional settings
+# ------------------------------------------------------------------------------
+
+# List of the GitHub usernames who will receive root access via ssh. Public
+# GitHub SSH keys will be installed to allow the user to ssh into the server as
+# root.
+#github_usernames: ['instructor', 'grader']
+
+# To mount local file systems populate this list. (Optional) This adds the
+# entries to /etc/fstab, creates the mount points, and mounts them. Note: Disks
+# must be partitioned and formatted.
+local_mounts: []
+#   - name: /mountpoint1
+#     src: /dev/sdb1
+#     fstype: ext3
+#   - name: /mountpoint2
+#     src: /dev/sdc1
+#     fstype: ext3
+
+# SSL using letsencrypt (optional - use letsencrypt default: false) If using
+# letsencrypt to generate SSL key/cert, set `use_letsencrypt` to `true`
+# Otherwise if not using letsencrypt for SSL, you MUST put your key and cert
+# into the security directory as `security/ssl.crt` and `security/ssl.key`.
+use_letsencrypt: false
+letsencrypt_email: ''
+
+# Should users have `/public_html/username` directories. Set this to `true` to
+# enable.
+nginx_public_html: false
+
+# Set Google Analytics Tracking ID (Optional).
+ga_tracking_id: ''
+
+# Set NewRelic license key (Optional).
+newrelic_license_key: ''
+
+# ------------------------------------------------------------------------------
+# Spawners
+# ------------------------------------------------------------------------------
+# Different spawners available https://github.com/jupyterhub/jupyterhub/wiki/Spawners
+# We use the systemd spawner to limit memory and CPU usage.
+
+# Set to `true` to enable.
+use_systemdspawner: true

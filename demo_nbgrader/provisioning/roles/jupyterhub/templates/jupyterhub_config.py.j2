@@ -1,0 +1,89 @@
+# {{ ansible_managed }}
+# Configuration file for jupyterhub.
+
+c = get_config()
+c.JupyterHub.ip = u'127.0.0.1'
+c.JupyterHub.port = 8000
+c.JupyterHub.cookie_secret_file = u'{{ jupyterhub_srv_dir }}/cookie_secret'
+c.JupyterHub.db_url = u'{{ jupyterhub_srv_dir }}/jupyterhub.sqlite'
+c.JupyterHub.proxy_auth_token = u'{{proxy_auth_token}}'
+c.JupyterHub.confirm_no_ssl = True
+{% if not cleanup_on_shutdown %}
+c.JupyterHub.cleanup_proxy = False
+c.JupyterHub.cleanup_servers = False
+{% endif %}
+
+c.JupyterHub.load_groups = {
+{% if use_nbgrader -%}
+{%- for course in nbgrader_courses -%}
+    'formgrade-{{course.course_id}}': [
+{%- for grader in course.graders -%}
+        '{{grader}}',
+{%- endfor -%}
+    ],
+{% endfor -%}
+{%- endif %}
+}
+
+c.LocalAuthenticator.create_system_users = True
+{% if use_LDAPauth %}
+#c.JupyterHub.authenticator_class = u'ldapauthenticator.LDAPAuthenticator'
+c.JupyterHub.authenticator_class = u'ldapauthenticator.ldapauthenticator.LDAPLocalAuthenticator'
+c.LDAPAuthenticator.create_system_users = True
+#c.Authenticator.add_user_cmd =  ['adduser', '-q', '--home', '{{home_dir}}/USERNAME', '--gecos', '""', '--disabled-password']
+c.LDAPAuthenticator.server_address = u'{{ ldap_server_address }}'
+c.LDAPAuthenticator.bind_dn_template = [
+	'uid={username}, ou=students, dc=fb02, dc=fh-bonn-rhein-sieg, dc=de',
+	'uid={username}, ou=staff, dc=fb02, dc=fh-bonn-rhein-sieg, dc=de'
+]
+{% endif %}
+
+{% if use_oauth %}
+c.JupyterHub.authenticator_class = u'oauthenticator.LocalGitHubOAuthenticator'
+c.LocalGitHubOAuthenticator.create_system_users = True
+c.Authenticator.add_user_cmd =  ['adduser', '-q', '--home', '{{home_dir}}/USERNAME', '--gecos', '""', '--disabled-password']
+c.GitHubOAuthenticator.oauth_callback_url = u'{{ oauth_callback_url }}'
+c.GitHubOAuthenticator.client_id = u'{{ oauth_client_id }}'
+c.GitHubOAuthenticator.client_secret = u'{{ oauth_client_secret }}'
+{% endif %}
+
+{% if jupyterhub_admin_users|length %}
+c.Authenticator.admin_users = {
+{%- for user in jupyterhub_admin_users[:-1] -%}
+'{{user}}',
+{%- endfor -%}
+'{{-jupyterhub_admin_users[-1]-}}'}
+{% else %}
+c.Authenticator.admin_users = set()
+{% endif %}
+
+{% if jupyterhub_users|length %}
+c.Authenticator.whitelist = {
+{%- for user in jupyterhub_users[:-1] -%}
+'{{user}}',
+{%- endfor -%}
+'{{-jupyterhub_users[-1]-}}'}
+{% else %}
+c.Authenticator.whitelist = set()
+{% endif %}
+
+c.JupyterHub.services = [
+{% if use_cull_idle_servers %}
+    {
+        'name': 'cull_idle_servers',
+        'admin': True,
+        'command': ['/usr/bin/python3', '{{jupyterhub_srv_dir}}/cull_idle_servers.py', '--cull-every={{cull_every}}', '--timeout={{cull_timeout}}']
+	},
+{% endif %}
+]
+
+{% if  use_systemdspawner %}
+
+c.JupyterHub.spawner_class = 'systemdspawner.SystemdSpawner'
+c.SystemdSpawner.mem_limit = '512M'
+c.SystemdSpawner.cpu_limit = 1
+c.SystemdSpawner.isolate_tmp = True
+c.SystemdSpawner.isolate_devices = True
+c.SystemdSpawner.disable_user_sudo = True
+
+{% endif %}

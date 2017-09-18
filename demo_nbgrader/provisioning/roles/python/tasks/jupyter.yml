@@ -1,0 +1,18 @@
+---
+# Uses pip to install ipython and jupyter dependencies and python3 kernel
+
+- name: pip install ipython and jupyter deps
+  pip: name={{item}} state=present
+  become: true
+  with_items:
+    - notebook
+    - ipyparallel
+    - ipykernel
+    - nbconvert
+    - pandoc
+    - ipywidgets
+
+- name: install python3 kernelspec
+  command: python3 -m IPython kernel install
+  become: true
+

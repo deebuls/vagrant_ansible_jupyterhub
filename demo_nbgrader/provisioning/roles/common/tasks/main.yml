@@ -1,0 +1,7 @@
+---
+
+- include: hostname.yml
+- include: ntp.yml
+- include: packages.yml
+#- include: mounts.yml
+- include: ssh.yml
